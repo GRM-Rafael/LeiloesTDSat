@@ -146,24 +146,32 @@ public class cadastroVIEW extends javax.swing.JFrame {
         ProdutosDTO produto = new ProdutosDTO();
         String nome = cadastroNome.getText();
         String valor = cadastroValor.getText();
-        String status = "A Venda";
-        produto.setNome(nome);
-        produto.setValor(Integer.parseInt(valor));
-        produto.setStatus(status);
+        //Validando para apenas aceitar numeros inteiros no atributo valor
+        if (!valor.matches("[0-9]{1,}")) {
+            JOptionPane.showMessageDialog(this, "Digite apenas Números!");
+            
+        } else {
+            String status = "A Venda";
+            produto.setNome(nome);
+            produto.setValor(Integer.parseInt(valor));
+            produto.setStatus(status);
 
-        ProdutosDAO produtodao = new ProdutosDAO();
-        try {
-            cdtStatus = produtodao.cadastrarProduto(produto);
-            if (cdtStatus == 1) {
-                JOptionPane.showMessageDialog(this, "Dados cadastrados com sucesso!");
-            } else if (cdtStatus == 1062) {
-                JOptionPane.showMessageDialog(this, "Produto já foi inserido");
-            } else {
-                JOptionPane.showMessageDialog(this, "Erro ao tentar cadastrar os dados");
+            ProdutosDAO produtodao = new ProdutosDAO();
+            try {
+                cdtStatus = produtodao.cadastrarProduto(produto);
+                if (cdtStatus == 1) {
+                    JOptionPane.showMessageDialog(this, "Dados cadastrados com sucesso!");
+                } else if (cdtStatus == 1062) {
+                    JOptionPane.showMessageDialog(this, "Produto já foi inserido");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro ao tentar cadastrar os dados");
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Não foi Possível Cadastrar os dados. \n" + e.getMessage());
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Não foi Possível Cadastrar os dados. \n" + e.getMessage());
         }
+        cadastroNome.setText("");
+        cadastroValor.setText("");
 
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
