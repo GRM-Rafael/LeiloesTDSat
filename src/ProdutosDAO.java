@@ -38,7 +38,7 @@ public class ProdutosDAO {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao Cadastrar: " + e.getMessage());
             return e.getErrorCode();
-            
+
         } finally {
             try {
                 if (conn != null && !conn.isClosed()) {
@@ -49,13 +49,41 @@ public class ProdutosDAO {
             }
         }
     }
-    
-
-    
 
     public ArrayList<ProdutosDTO> listarProdutos() {
+        conectaDAO conectadao = new conectaDAO();
+        String sql = "SELECT * FROM produtos";
+        try {
+            conn = conectadao.connectDB();
+            prep = conn.prepareStatement(sql);
+            resultset = prep.executeQuery();
 
-        return listagem;
+            while (resultset.next()) {
+                ProdutosDTO produto = new ProdutosDTO();
+
+                produto.setId(resultset.getInt("id"));
+                produto.setNome(resultset.getString("nome"));
+                produto.setValor(resultset.getInt("valor"));
+                produto.setStatus(resultset.getString("status"));
+
+                listagem.add(produto);
+            }
+            return listagem;
+
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(null, "Erro ao Listar! \n" + e.getMessage());
+            return null;
+        
+        } finally {
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+
+            } catch (SQLException e) {
+            }
+        }
+
     }
 
 }
