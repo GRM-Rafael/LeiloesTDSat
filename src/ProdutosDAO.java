@@ -73,7 +73,7 @@ public class ProdutosDAO {
         } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, "Erro ao Listar! \n" + e.getMessage());
             return null;
-        
+
         } finally {
             try {
                 if (conn != null && !conn.isClosed()) {
@@ -84,6 +84,70 @@ public class ProdutosDAO {
             }
         }
 
+    }
+    
+    public ProdutosDTO consultaId(int id){
+        conectaDAO conectaDao = new conectaDAO();
+        try {
+            ProdutosDTO produto = new ProdutosDTO();
+            conn = conectaDao.connectDB();
+            
+            prep = conn.prepareStatement("SELECT * from produtos WHERE id = ?");
+            prep.setInt(1, id);
+            
+            resultset = prep.executeQuery();
+            if(resultset.next()){
+                produto.setId(resultset.getInt("id"));
+                produto.setNome(resultset.getString("nome"));
+                produto.setValor(resultset.getInt("valor"));
+                produto.setStatus(resultset.getString("status"));
+                return produto;
+                
+            } else {
+                return null;
+            }
+            
+        } catch (SQLException e) {
+            return null;
+            
+        } finally {
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+
+            } catch (SQLException e) {
+            }
+        }
+        
+    }
+
+    public int venderProduto(ProdutosDTO produto) {
+        int status;
+        conectaDAO conectaDao = new conectaDAO();
+        try {
+            conn = conectaDao.connectDB();
+            prep = conn.prepareStatement("UPDATE produtos SET nome = ?, valor = ?, status = ? WHERE id = ?");
+            prep.setString(1, produto.getNome());
+            prep.setInt(2, produto.getValor());
+            prep.setString(3, produto.getStatus());
+            prep.setInt(4, produto.getId());
+            status = prep.executeUpdate();
+
+            return status;
+
+        } catch (SQLException e) {
+            return e.getErrorCode();
+            
+        } finally {
+            try {
+                if (conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+
+            } catch (SQLException e) {
+            }
+        }
     }
 
 }
