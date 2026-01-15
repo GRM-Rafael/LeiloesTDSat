@@ -151,17 +151,17 @@ public class listagemVIEW extends javax.swing.JFrame {
 
                 status = produtosdao.venderProduto(produto);
                 if (status == 1) {
-                    JOptionPane.showMessageDialog(this, "Dados atualizados com sucesso!");
+                    JOptionPane.showMessageDialog(this, "Produto ID: " + id + " vendido com Sucesso!");
                     id_produto_venda.setText("");
                 } else if (status == 1062) {
                     JOptionPane.showMessageDialog(this, "Id já foi inserida");
                 } else {
-                    JOptionPane.showMessageDialog(this, "Erro ao tentar inserir os dados");
+                    JOptionPane.showMessageDialog(this, "Erro ao tentar atualizar os dados");
                 }
             }
 
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Não foi possivel atualizar os dados do Filme selecionado. \n" + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Não foi possivel vender o Produto digitado. \n" + e.getMessage());
         }
 
         listarProdutos();
