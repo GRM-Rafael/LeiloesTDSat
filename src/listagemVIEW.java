@@ -54,6 +54,8 @@ public class listagemVIEW extends javax.swing.JFrame {
                 "ID", "Nome", "Valor", "Status"
             }
         ));
+        listaProdutos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        listaProdutos.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
         jScrollPane1.setViewportView(listaProdutos);
 
         jLabel1.setFont(new java.awt.Font("Lucida Fax", 0, 18)); // NOI18N
@@ -137,16 +139,37 @@ public class listagemVIEW extends javax.swing.JFrame {
 
     private void btnVenderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVenderActionPerformed
         String id = id_produto_venda.getText();
-
+        int status;
         ProdutosDAO produtosdao = new ProdutosDAO();
 
-        //produtosdao.venderProduto(Integer.parseInt(id));
+        try {
+            ProdutosDTO produto = produtosdao.consultaId(Integer.parseInt(id));
+            if (produto == null) {
+                JOptionPane.showMessageDialog(this, "Id não encontrada! Tente Novamente com uma Id presente na tabela!");
+            } else {
+                produto.setStatus("Vendido");
+
+                status = produtosdao.venderProduto(produto);
+                if (status == 1) {
+                    JOptionPane.showMessageDialog(this, "Produto ID: " + id + " vendido com Sucesso!");
+                    id_produto_venda.setText("");
+                } else if (status == 1062) {
+                    JOptionPane.showMessageDialog(this, "Id já foi inserida");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Erro ao tentar atualizar os dados");
+                }
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Não foi possivel vender o Produto digitado. \n" + e.getMessage());
+        }
+
         listarProdutos();
     }//GEN-LAST:event_btnVenderActionPerformed
 
     private void btnVendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVendasActionPerformed
-        //vendasVIEW vendas = new vendasVIEW(); 
-        //vendas.setVisible(true);
+        vendasVIEW vendas = new vendasVIEW(); 
+        vendas.setVisible(true);
     }//GEN-LAST:event_btnVendasActionPerformed
 
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
@@ -204,13 +227,12 @@ public class listagemVIEW extends javax.swing.JFrame {
     private void listarProdutos() {
         try {
             ProdutosDAO produtosdao = new ProdutosDAO();
-            
 
             DefaultTableModel model = (DefaultTableModel) listaProdutos.getModel();
             model.setNumRows(0);
 
             ArrayList<ProdutosDTO> listagem = produtosdao.listarProdutos();
-            
+
             if (!listagem.isEmpty()) {
                 for (int i = 0; i < listagem.size(); i++) {
                     model.addRow(new Object[]{
@@ -225,6 +247,6 @@ public class listagemVIEW extends javax.swing.JFrame {
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Ocorreu um erro ao adicionar os dados na Tabela. " + e.getMessage());
         }
-        
+
     }
 }
